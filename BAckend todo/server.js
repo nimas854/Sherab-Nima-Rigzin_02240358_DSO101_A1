@@ -1,7 +1,22 @@
 const http = require("http");
 const pool = require("./db");
 
-const port = process.env.PORT || 5000;
+function resolvePort(rawPort, fallback = 5000) {
+  const normalized = String(rawPort ?? "").trim();
+
+  if (!/^\d+$/.test(normalized)) {
+    return fallback;
+  }
+
+  const parsed = Number(normalized);
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65535) {
+    return fallback;
+  }
+
+  return parsed;
+}
+
+const port = resolvePort(process.env.PORT);
 
 function setCorsHeaders(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");

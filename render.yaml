@@ -2,7 +2,7 @@ services:
   - type: web
     name: be-todo
     env: docker
-    dockerfilePath: ./backend todo/Dockerfile
+    dockerfilePath: ./BAckend todo/Dockerfile
     envVars:
       - key: DB_HOST
         value: your-render-db-host
