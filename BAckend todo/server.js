@@ -63,6 +63,15 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.url === "/" && req.method === "GET") {
+    sendJson(res, 200, {
+      status: "ok",
+      message: "Backend is running",
+      endpoints: ["/api/todo", "/api/todos"],
+    });
+    return;
+  }
+
   if (req.url !== "/api/todo" && req.url !== "/api/todos") {
     sendJson(res, 404, { error: "Not found" });
     return;
