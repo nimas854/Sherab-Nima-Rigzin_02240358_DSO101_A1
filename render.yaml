@@ -5,11 +5,15 @@ services:
     dockerfilePath: ./BAckend todo/Dockerfile
     envVars:
       - key: DB_HOST
-        value: your-render-db-host
+        value: YOUR_ACTUAL_HOST_HERE
       - key: DB_USER
-        value: your-db-user
+        value: YOUR_ACTUAL_USER_HERE
       - key: DB_PASSWORD
-        value: your-db-password
+        value: YOUR_ACTUAL_PASSWORD_HERE
+      - key: DB_NAME
+        value: YOUR_ACTUAL_DB_NAME_HERE
+      - key: DB_PORT
+        value: 5432
       - key: PORT
         value: 5000
 

@@ -1,27 +1,15 @@
 const http = require("http");
 const pool = require("./db");
 
-function resolvePort(rawPort, fallback = 5000) {
-  const normalized = String(rawPort ?? "").trim();
+// ✅ Define ALL functions FIRST before using them
 
-  if (!/^\d+$/.test(normalized)) {
-    return fallback;
-  }
-
-  const parsed = Number(normalized);
-  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65535) {
-    return fallback;
-  }
-
-  return parsed;
-}
-
-const port = resolvePort(process.env.PORT);
+const ALLOWED_ORIGIN = "https://fe-todo-02190108-1.onrender.com";
 
 function setCorsHeaders(res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 }
 
 function sendJson(res, statusCode, payload) {
@@ -33,29 +21,39 @@ function sendJson(res, statusCode, payload) {
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = "";
-
     req.on("data", (chunk) => {
       data += chunk;
     });
-
     req.on("end", () => {
       if (!data) {
         resolve({});
         return;
       }
-
       try {
         resolve(JSON.parse(data));
       } catch (error) {
         reject(new Error("Invalid JSON body"));
       }
     });
-
     req.on("error", reject);
   });
 }
 
+function resolvePort(rawPort, fallback = 5000) {
+  const normalized = String(rawPort ?? "").trim();
+  if (!/^\d+$/.test(normalized)) return fallback;
+  const parsed = Number(normalized);
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65535)
+    return fallback;
+  return parsed;
+}
+
+const port = resolvePort(process.env.PORT);
+
+// ✅ Server starts AFTER all functions are defined
+
 const server = http.createServer(async (req, res) => {
+  // Handle preflight FIRST
   if (req.method === "OPTIONS") {
     setCorsHeaders(res);
     res.writeHead(204);
@@ -72,7 +70,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (req.url !== "/api/todo" && req.url !== "/api/todos") {
+  if (!req.url.startsWith("/api/todo")) {
     sendJson(res, 404, { error: "Not found" });
     return;
   }
@@ -88,12 +86,10 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === "POST") {
       const { task } = body;
-
       if (!task) {
         sendJson(res, 400, { error: "task is required" });
         return;
       }
-
       const result = await pool.query(
         "INSERT INTO todos(task) VALUES($1) RETURNING *",
         [task],
@@ -104,12 +100,10 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === "PUT") {
       const { id, task } = body;
-
       if (!id || !task) {
         sendJson(res, 400, { error: "id and task are required" });
         return;
       }
-
       await pool.query("UPDATE todos SET task=$1 WHERE id=$2", [task, id]);
       sendJson(res, 200, { message: "Updated" });
       return;
@@ -117,12 +111,10 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === "DELETE") {
       const { id } = body;
-
       if (!id) {
         sendJson(res, 400, { error: "id is required" });
         return;
       }
-
       await pool.query("DELETE FROM todos WHERE id=$1", [id]);
       sendJson(res, 200, { message: "Deleted" });
       return;

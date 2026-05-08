@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-const API = import.meta.env.VITE_API_URL;
+const API = `${String(import.meta.env.VITE_API_URL ?? "http://localhost:5000").replace(/\/$/, "")}/api/todo`;
 
 function Todo() {
   const [task, setTask] = useState("");
@@ -14,7 +14,7 @@ function Todo() {
       setError("");
       const res = await fetch(API);
       if (!res.ok) {
-        throw new Error("Failed to load tasks");
+        throw new Error(`Failed to load tasks (${res.status})`);
       }
       const data = await res.json();
       setTodos(data);
