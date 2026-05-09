@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="4" failures="0" errors="0" time="1.078">
+  <testsuite name="Todo API Logic" errors="0" failures="0" skipped="0" timestamp="2026-05-09T20:20:18" time="0.878" tests="4">
+    <testcase classname="Todo API Logic should return true when task is not empty" name="Todo API Logic should return true when task is not empty" time="0.005">
+    </testcase>
+    <testcase classname="Todo API Logic should return false when task is empty" name="Todo API Logic should return false when task is empty" time="0.001">
+    </testcase>
+    <testcase classname="Todo API Logic should validate todo object has task property" name="Todo API Logic should validate todo object has task property" time="0.001">
+    </testcase>
+    <testcase classname="Todo API Logic should validate todo id is a number" name="Todo API Logic should validate todo id is a number" time="0.004">
+    </testcase>
+  </testsuite>
+</testsuites>
