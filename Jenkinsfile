@@ -6,8 +6,8 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE_BACKEND = 'sherab5/be-todo:02190108'
-        DOCKER_IMAGE_FRONTEND = 'sherab5/fe-todo:02190108'
+        DOCKER_IMAGE_BACKEND = 'herab5/be-todo:02190108'
+        DOCKER_IMAGE_FRONTEND = 'herab5/fe-todo:02190108'
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('BAckend todo') {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -31,12 +31,12 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('BAckend todo') {
-                    sh 'npm test'
+                    bat 'npm test'
                 }
             }
             post {
                 always {
-                    junit 'BAckend todo/junit.xml'
+                    junit allowEmptyResults: true, testResults: 'BAckend todo/junit.xml'
                 }
             }
         }
